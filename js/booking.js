@@ -1,7 +1,7 @@
 /*
  * Онлайн-запись.
  * Вся работа с данными — в двух функциях: getSchedule() и submitBooking().
- * Позже заменить тело на fetch к Cloudflare Worker (D1).
+ * Данные берутся с сервера: GET /api/schedule и POST /api/booking (адрес можно задать через window.SHKIP_API).
  *
  * Формат ответа getSchedule(weekStartISO):
  * {
@@ -32,60 +32,78 @@
   function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
   function fromISO(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
 
-  /* ---------- ДЕМО-ДАННЫЕ (удалить при подключении API) ---------- */
-  function demoSchedule(weekStartISO) {
-    var monday = fromISO(weekStartISO);
-    var now = new Date();
-    var todayISO = iso(now);
-    var weekIdx = Math.round((monday - mondayOf(now)) / (7 * 864e5));
-    var allClosed = weekIdx === 2;                     // демо: неделя целиком недоступна
-    var banner = null;
-
-    // TODO: баннер приходит из админки. Для проверки: ?banner=break или ?banner=morning
-    var q = new URLSearchParams(location.search).get('banner');
-    if (q === 'break') banner = { text: 'Сегодня технический перерыв' };
-    if (q === 'morning') banner = { text: 'Сегодня до 13:00 приём не ведём' };
-
-    var days = [];
-    for (var i = 0; i < WORK_DAYS; i++) {
-      var d = addDays(monday, i);
-      var ds = iso(d);
-      var slots = [];
-      for (var h = DAY_START; h < DAY_END; h++) {
-        var status = 'free';
-        var seed = (d.getDate() * 7 + h * 3 + d.getMonth()) % 5;   // псевдослучайно, но стабильно
-        if (seed === 0 || seed === 3 && h % 2 === 0) status = 'busy';
-        if (allClosed) status = 'busy';
-        if (ds < todayISO) status = 'busy';
-        if (ds === todayISO) {
-          if (h <= now.getHours()) status = 'busy';
-          if (banner && banner.text.indexOf('перерыв') !== -1) status = 'busy';
-          if (banner && banner.text.indexOf('13:00') !== -1 && h < 13) status = 'busy';
-        }
-        slots.push({ time: pad(h) + ':00', status: status });
-      }
-      days.push({ date: ds, slots: slots });
-    }
-    return {
-      banner: banner,
-      closedMessage: allClosed ? 'На эту неделю свободных окон нет. Загляните на следующую или позвоните нам.' : null,
-      days: days
-    };
-  }
-
   /* ---------- ЕДИНАЯ ТОЧКА ПОЛУЧЕНИЯ ДАННЫХ ---------- */
-  function getSchedule(weekStartISO) {
-    // TODO: заменить на
-    //   return fetch('/api/schedule?week=' + weekStartISO).then(function (r) { return r.json(); });
-    return new Promise(function (resolve) {
-      setTimeout(function () { resolve(demoSchedule(weekStartISO)); }, 120);
+  var API = (window.SHKIP_API || '') + '/api';
+
+  // Сервер на бесплатном хостинге «засыпает» и просыпается до минуты, поэтому загрузку расписания
+  // повторяем (только GET — он безопасен) примерно 75 секунд. POST /api/booking автоматически НЕ повторяется.
+  var RETRY_TOTAL_MS = 75000;
+  var RETRY_GAP_MS = 5000;
+  var ATTEMPT_TIMEOUT_MS = 20000;
+
+  function delay(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+
+  function fetchScheduleOnce(url, timeoutMs) {
+    var opts = { cache: 'no-store' };
+    var timer = null;
+    if (typeof AbortController !== 'undefined') {
+      var ctrl = new AbortController();
+      opts.signal = ctrl.signal;
+      timer = setTimeout(function () { ctrl.abort(); }, timeoutMs);
+    }
+    return fetch(url, opts).then(function (r) {
+      if (!r.ok) throw new Error('http_' + r.status);
+      return r.json();   // не-JSON ответ (например, страница «сервер просыпается») даст ошибку и повтор
+    }).then(function (data) {
+      if (timer) clearTimeout(timer);
+      if (!data || !Array.isArray(data.days)) throw new Error('bad_data');
+      return data;
+    }, function (err) {
+      if (timer) clearTimeout(timer);
+      throw err;
     });
   }
 
+  // isCancelled — необязательная функция: если вернула true, повторы прекращаются.
+  function getSchedule(weekStartISO, isCancelled) {
+    var url = API + '/schedule?week=' + encodeURIComponent(weekStartISO);
+    var started = Date.now();
+    function attempt() {
+      var left = RETRY_TOTAL_MS - (Date.now() - started);
+      return fetchScheduleOnce(url, Math.max(5000, Math.min(ATTEMPT_TIMEOUT_MS, left))).catch(function (err) {
+        var elapsed = Date.now() - started;
+        if ((isCancelled && isCancelled()) || elapsed + RETRY_GAP_MS >= RETRY_TOTAL_MS) throw err;
+        return delay(RETRY_GAP_MS).then(function () {
+          if (isCancelled && isCancelled()) throw err;
+          return attempt();
+        });
+      });
+    }
+    return attempt().then(function (data) {
+      // Сервер отдаёт код 'all_closed', если на неделю всё закрыто; текст показываем здесь.
+      if (data.closedMessage === 'all_closed') {
+        data.closedMessage = 'На эту неделю свободных окон нет. Загляните на следующую или позвоните нам.';
+      }
+      return data;
+    });
+  }
+
+  // Успех — только если сервер ответил 201 с ok:true. Иначе отказ; у ошибки есть поле status.
   function submitBooking(payload) {
-    // TODO: заменить на
-    //   return fetch('/api/booking', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }).then(...)
-    return new Promise(function (resolve) { setTimeout(function () { resolve({ ok: true }); }, 250); });
+    return fetch(API + '/booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (data) {
+        if (!r.ok || !data || data.ok !== true) {
+          var err = new Error('http_' + r.status);
+          err.status = r.status;
+          throw err;
+        }
+        return data;
+      });
+    });
   }
 
   /* ---------- UI ---------- */
@@ -106,6 +124,7 @@
   var weekOffset = 0;
   var selected = null;   // { date, time, btn }
   var requestId = 0;
+  var slowTimer = null;
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -158,18 +177,28 @@
     });
   }
 
-  function loadWeek() {
+  function loadWeek(keepForm) {
     var monday = addDays(thisMonday, weekOffset * 7);
     var id = ++requestId;
-    closeForm();
+    if (!keepForm) closeForm();
     elCal.setAttribute('aria-busy', 'true');
-    getSchedule(iso(monday)).then(function (data) {
+    if (slowTimer) clearTimeout(slowTimer);
+    // Если ответ задерживается (сервер просыпается), объясняем, что происходит.
+    slowTimer = setTimeout(function () {
       if (id !== requestId) return;
+      elNote.textContent = 'Загружаем расписание, это может занять до минуты…';
+      elNote.hidden = false;
+    }, 2500);
+    getSchedule(iso(monday), function () { return id !== requestId; }).then(function (data) {
+      if (id !== requestId) return;
+      clearTimeout(slowTimer);
       render(data, monday);
       elCal.removeAttribute('aria-busy');
     }).catch(function () {
+      if (id !== requestId) return;
+      clearTimeout(slowTimer);
       elCal.textContent = '';
-      elNote.textContent = 'Не удалось загрузить расписание. Позвоните нам: +375 29 685-56-00.';
+      elNote.textContent = 'Онлайн-запись временно недоступна. Для записи позвоните нам: +375 29 685-56-00.';
       elNote.hidden = false;
       elCal.removeAttribute('aria-busy');
     });
@@ -200,7 +229,11 @@
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!selected) return;
+    if (!selected) {
+      elError.textContent = 'Выберите время в календаре.';
+      elError.hidden = false;
+      return;
+    }
     var f = form.elements;
     var phoneDigits = f.phone.value.replace(/\D/g, '');
     var bad = [];
@@ -239,9 +272,19 @@
       elSuccess.hidden = false;
       elSuccess.focus();
       loadWeek();
-    }).catch(function () {
-      elError.textContent = 'Не получилось отправить. Позвоните нам: +375 29 685-56-00.';
-      elError.hidden = false;
+    }).catch(function (err) {
+      if (err && err.status === 409) {
+        // Форму не закрываем (loadWeek(true)), иначе ошибка скроется вместе с ней.
+        if (selected && selected.btn) selected.btn.setAttribute('aria-pressed', 'false');
+        selected = null;
+        elSlotLabel.textContent = 'выберите другое время';
+        elError.textContent = 'Это время только что заняли. Выберите другое.';
+        elError.hidden = false;
+        loadWeek(true);
+      } else {
+        elError.textContent = 'Не получилось отправить. Позвоните нам: +375 29 685-56-00.';
+        elError.hidden = false;
+      }
     }).then(function () { submitBtn.disabled = false; });
   });
 
