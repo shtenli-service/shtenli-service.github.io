@@ -197,7 +197,8 @@ address { font-style: normal; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .92rem; }
 .span-2 { grid-column: span 2; }
-input[type="text"], input[type="tel"], select, textarea {
+input[type="date"] { color-scheme: dark; }
+input[type="text"], input[type="tel"], input[type="date"], select, textarea {
   font: inherit; font-weight: 400; color: var(--text); background: var(--bg);
   border: 1px solid var(--border); border-radius: 8px; padding: 11px 12px; min-height: 46px; width: 100%;
 }

@@ -119,6 +119,7 @@
   var elError = document.getElementById('form-error');
   var elSuccess = document.getElementById('form-success');
   var elSuccessDetail = document.getElementById('form-success-detail');
+  if (form) form.elements.purchaseDate.max = iso(new Date());
 
   var thisMonday = mondayOf(new Date());
   var weekOffset = 0;
@@ -252,6 +253,22 @@
     }
     elError.hidden = true;
 
+    var purchase = f.purchaseDate.value;
+    var isWarranty = f.warranty.value === 'yes';
+    var purchaseProblem = '';
+    if (isWarranty && !purchase) {
+      purchaseProblem = 'Для гарантийного ремонта укажите дату покупки.';
+    } else if (purchase && (!/^\d{4}-\d{2}-\d{2}$/.test(purchase) || purchase > iso(new Date()) || purchase < '2000-01-01')) {
+      purchaseProblem = 'Проверьте дату покупки: она не может быть в будущем.';
+    }
+    f.purchaseDate.setAttribute('aria-invalid', purchaseProblem ? 'true' : 'false');
+    if (purchaseProblem) {
+      elError.textContent = purchaseProblem;
+      elError.hidden = false;
+      f.purchaseDate.focus();
+      return;
+    }
+
     var payload = {
       date: selected.date,
       time: selected.time,
@@ -260,7 +277,8 @@
       equipment: f.equipment.value,
       brand: f.brand.value,
       problem: f.problem.value.trim(),
-      warranty: f.warranty.value === 'yes'
+      warranty: isWarranty,
+      purchaseDate: purchase || null
     };
     var submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
