@@ -259,6 +259,12 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .requisites p { margin: 0 0 4px; }
 .requisites a { color: var(--text); }
 .counter { margin-top: 8px !important; }
+.footer-legal { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); font-size: .82rem; text-align: center; }
+.footer-legal p { margin: 0 0 10px; }
+.footer-legal a { color: var(--text); }
+.footer-bottom { margin-top: 8px; display: flex; justify-content: flex-start; }
+.footer-privacy[aria-disabled="true"] { opacity: .6; cursor: default; }
+.footer-privacy[aria-disabled="true"]:hover { border-color: var(--border); color: var(--text); }
 
 /* Липкая кнопка звонка (только мобильные) */
 .call-fab { display: none; }
