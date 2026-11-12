@@ -268,7 +268,7 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .footer-privacy { text-decoration: none; }
 
 /* Страница политики конфиденциальности */
-.legal { padding-top: 28px; padding-bottom: 48px; max-width: 980px; }
+.legal { padding-top: 28px; padding-bottom: 48px; }
 .legal h1 { font-family: "Oswald", var(--font); font-weight: 600; font-size: clamp(1.5rem, 4.5vw, 2.1rem); margin: 6px 0; }
 .legal h2 { font-size: 1.15rem; font-family: var(--font); font-weight: 800; margin-top: 1.8em; }
 .legal p, .legal li { color: var(--text); text-align: justify; hyphens: auto; }
