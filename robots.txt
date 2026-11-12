@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shtenli-service.github.io/sitemap.xml

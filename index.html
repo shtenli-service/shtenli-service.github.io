@@ -28,11 +28,14 @@
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "ЧСУП «Шкип» — сервисный центр Shtenli и Profi Motors",
-    "description": "Официальный сервисный центр брендов Shtenli (Штенли) и Profi Motors в Беларуси. Гарантийный и постгарантийный ремонт, плановое ТО.",
+    "legalName": "Частное сервисное унитарное предприятие «Шкип»",
+    "taxID": "192764905",
+    "description": "Официальный сервисный центр брендов Shtenli (Штенли) и Profi Motors в Беларуси. Гарантийный и постгарантийный ремонт мотоблоков, электротранспорта, бензокос, бензопил, генераторов и другой техники, плановое ТО.",
     "telephone": "+375296855600",
+    "email": "m.yuliya.wsp@gmail.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "ул. Медвежино, 10",
+      "streetAddress": "ул. Медвежино, д. 10",
       "addressLocality": "Минск",
       "postalCode": "220018",
       "addressCountry": "BY"
@@ -44,14 +47,33 @@
     },
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       "opens": "09:00",
       "closes": "17:00"
     },
-    "url": "https://shtenli-service.github.io/"
+    "areaServed": { "@type": "Country", "name": "Беларусь" },
+    "brand": [
+      { "@type": "Brand", "name": "Shtenli" },
+      { "@type": "Brand", "name": "Profi Motors" }
+    ],
+    "url": "https://shtenli-service.github.io/",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Ремонт техники",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт мотоблоков и культиваторов", "description": "Бензиновые и дизельные мотоблоки, мотокультиваторы, минитракторы: двигатель, коробка, сцепление, колёса и шины, фара, проводка." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт электротранспорта", "description": "Электроскутеры, электровелосипеды, трициклы, электросамокаты: мотор-колесо, контроллер, аккумулятор, тормоза." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт бензокос, триммеров и газонокосилок", "description": "Карбюратор, стартер, редуктор, зажигание; электрокосы." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт бензопил и электропил", "description": "Запуск, цепь и шина, маслонасос, тормоз цепи." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт генераторов и мотопомп", "description": "Не заводится, нет напряжения, плавают обороты, не качает." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт двигателей", "description": "Двигатели для мотоблоков и культиваторов: ремонт, переборка, замена." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт сварочных аппаратов и компрессоров", "description": "Не варит, выбивает, не набирает давление, травит воздух." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт бетоносмесителей и насосов", "description": "Мотор, редуктор, венец, дренажные насосы." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт электроинструмента", "description": "Перфораторы, болгарки, дрели, шуруповёрты, циркулярные пилы, точила." } }
+      ]
+    }
   }
   </script>
-  <!-- TODO: geo (широта/долгота) и часы в JSON-LD — заменить на реальные -->
 </head>
 <body>
   <a class="skip-link" href="#main">К содержанию</a>
