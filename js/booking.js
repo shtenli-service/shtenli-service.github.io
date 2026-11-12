@@ -269,6 +269,14 @@
       return;
     }
 
+    if (!f.consent.checked) {
+      elError.textContent = 'Чтобы отправить заявку, отметьте согласие на обработку персональных данных.';
+      elError.hidden = false;
+      f.consent.focus();
+      return;
+    }
+    elError.hidden = true;
+
     var payload = {
       date: selected.date,
       time: selected.time,
@@ -278,7 +286,8 @@
       brand: f.brand.value,
       problem: f.problem.value.trim(),
       warranty: isWarranty,
-      purchaseDate: purchase || null
+      purchaseDate: purchase || null,
+      consent: true
     };
     var submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
