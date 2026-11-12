@@ -263,8 +263,24 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .footer-legal p { margin: 0 0 10px; }
 .footer-legal a { color: var(--text); }
 .footer-bottom { margin-top: 8px; display: flex; justify-content: flex-start; }
-.footer-privacy[aria-disabled="true"] { opacity: .6; cursor: default; }
-.footer-privacy[aria-disabled="true"]:hover { border-color: var(--border); color: var(--text); }
+.footer-privacy { text-decoration: none; }
+
+/* Страница политики конфиденциальности */
+.legal { padding-top: 28px; padding-bottom: 48px; max-width: 980px; }
+.legal h1 { font-family: "Oswald", var(--font); font-weight: 600; font-size: clamp(1.5rem, 4.5vw, 2.1rem); margin: 6px 0; }
+.legal h2 { font-size: 1.15rem; font-family: var(--font); font-weight: 800; margin-top: 1.8em; }
+.legal p, .legal li { color: var(--text); }
+.legal ul { list-style: disc; padding-left: 22px; margin-bottom: 1em; }
+.legal-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.legal-head p { margin: 0; color: var(--text-muted); }
+.legal-approved p { font-size: .9rem; }
+.legal-back { margin-left: auto; text-decoration: none; }
+.table-wrap { overflow-x: auto; margin: 0 0 1em; border: 1px solid var(--border); border-radius: var(--radius); }
+.legal table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.legal .table-wide { min-width: 860px; }
+.legal th, .legal td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.legal th { background: var(--surface); color: var(--text-muted); font-weight: 700; }
+.legal tr:last-child td { border-bottom: 0; }
 
 /* Липкая кнопка звонка (только мобильные) */
 .call-fab { display: none; }
