@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Exo+2:ital,wght@1,800;1,900&display=swap&subset=cyrillic" rel="stylesheet">
   <!-- ?v= — номер версии: менять при каждом изменении CSS/JS, чтобы браузеры брали свежие файлы -->
-  <link rel="stylesheet" href="css/style.css?v=20261113">
+  <link rel="stylesheet" href="css/style.css?v=20261113q">
   <link rel="preload" as="image" href="img/hero-bg.jpg">
 
   <script type="application/ld+json">
@@ -73,6 +73,22 @@
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ремонт электроинструмента", "description": "Перфораторы, болгарки, дрели, шуруповёрты, циркулярные пилы, точила." } }
       ]
     }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Сколько длится ремонт?", "acceptedAnswer": { "@type": "Answer", "text": "Срок ремонта зависит от характера поломки и наличия запчастей. Точный срок уточняйте в сервисе." } },
+      { "@type": "Question", "name": "Что взять с собой на гарантийный ремонт?", "acceptedAnswer": { "@type": "Answer", "text": "Только гарантийный талон, в котором записаны модель товара и дата покупки." } },
+      { "@type": "Question", "name": "Нужно ли записываться заранее?", "acceptedAnswer": { "@type": "Answer", "text": "Да, лучше записаться: выберите свободное время в онлайн-записи на сайте или позвоните по номеру +375 29 685-56-00." } },
+      { "@type": "Question", "name": "Можно ли узнать причину поломки до приезда?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Пришлите фото или видео поломки в Telegram или Viber на номер +375 29 685-56-00. Мастер подскажет возможную причину и ближайшую дату, когда сможем принять технику." } },
+      { "@type": "Question", "name": "Ремонтируете ли технику после окончания гарантии?", "acceptedAnswer": { "@type": "Answer", "text": "Да. Делаем гарантийный и постгарантийный ремонт, а также плановое техобслуживание техники Shtenli (Штенли) и Profi Motors." } },
+      { "@type": "Question", "name": "Ремонтируете ли технику других брендов?", "acceptedAnswer": { "@type": "Answer", "text": "Да, ремонтируем. Перед тем как привезти технику, позвоните или напишите мастеру: он скажет, есть ли у нас нужная запчасть. Если её нет, запчасть можно купить самостоятельно и привезти с собой — мы её поставим." } },
+      { "@type": "Question", "name": "Продаёте ли вы запчасти Shtenli?", "acceptedAnswer": { "@type": "Answer", "text": "Отдельно запчасти не продаём. Для ремонта оригинальные запчасти Shtenli и Profi Motors есть на складе или быстро приходят с завода, привозить их с собой не нужно." } },
+      { "@type": "Question", "name": "Где вы находитесь и когда работаете?", "acceptedAnswer": { "@type": "Answer", "text": "Минск, ул. Медвежино, 10, левый вход, дверь со звонком. Пн–Пт с 9:00 до 17:00, суббота и воскресенье — выходные." } }
+    ]
   }
   </script>
 </head>
@@ -346,7 +362,47 @@
       </div>
     </section>
 
-    <section class="section" id="contacts" aria-labelledby="contacts-h">
+    <section class="section" id="faq" aria-labelledby="faq-h">
+      <div class="container">
+        <h2 id="faq-h">Вопросы и ответы</h2>
+        <div class="faq">
+          <details open>
+            <summary>Сколько длится ремонт?</summary>
+            <div class="faq-a"><p>Срок ремонта зависит от характера поломки и наличия запчастей. Точный срок уточняйте в сервисе.</p></div>
+          </details>
+          <details>
+            <summary>Что взять с собой на гарантийный ремонт?</summary>
+            <div class="faq-a"><p>Только <strong>гарантийный талон</strong>, в котором записаны модель товара и дата покупки.</p></div>
+          </details>
+          <details>
+            <summary>Нужно ли записываться заранее?</summary>
+            <div class="faq-a"><p>Да, лучше записаться: выберите свободное время в <a href="#booking">онлайн-записи</a> или позвоните по номеру <a href="tel:+375296855600">+375 29 685-56-00</a>.</p></div>
+          </details>
+          <details>
+            <summary>Можно ли узнать причину поломки до приезда?</summary>
+            <div class="faq-a"><p>Да. Пришлите фото или видео поломки в Telegram или Viber на номер +375 29 685-56-00. Мастер подскажет возможную причину и ближайшую дату, когда сможем принять технику.</p></div>
+          </details>
+          <details>
+            <summary>Ремонтируете ли технику после окончания гарантии?</summary>
+            <div class="faq-a"><p>Да. Делаем гарантийный и постгарантийный ремонт, а также плановое техобслуживание техники Shtenli (Штенли) и Profi Motors.</p></div>
+          </details>
+          <details>
+            <summary>Ремонтируете ли технику других брендов?</summary>
+            <div class="faq-a"><p>Да, ремонтируем. Перед тем как привезти технику, позвоните или напишите мастеру: он скажет, есть ли у нас нужная запчасть. Если её нет, запчасть можно купить самостоятельно и привезти с собой — мы её поставим.</p></div>
+          </details>
+          <details>
+            <summary>Продаёте ли вы запчасти Shtenli?</summary>
+            <div class="faq-a"><p>Отдельно запчасти не продаём. Для ремонта оригинальные запчасти Shtenli и Profi Motors есть на складе или быстро приходят с завода, привозить их с собой не нужно.</p></div>
+          </details>
+          <details>
+            <summary>Где вы находитесь и когда работаете?</summary>
+            <div class="faq-a"><p>Минск, ул. Медвежино, 10, левый вход, дверь со звонком. Пн–Пт с 9:00 до 17:00, суббота и воскресенье — выходные.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="contacts" aria-labelledby="contacts-h">
       <div class="container contacts">
         <div>
           <h2 id="contacts-h">Контакты</h2>
