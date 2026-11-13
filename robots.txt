@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shtenli-service.github.io/sitemap.xml
+Sitemap: https://shtenli-service.by/sitemap.xml
