@@ -351,3 +351,9 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .faq .faq-a p { margin: 0 0 .6em; }
 .faq .faq-a p:last-child { margin-bottom: 0; }
 .faq .faq-a strong { color: var(--text); }
+
+/* SEO-текст внизу страницы */
+.seo-text { max-width: 980px; }
+.seo-text h3 { font-size: 1.15rem; margin: 1.6em 0 .5em; }
+.seo-text p { margin: 0 0 .9em; color: var(--text-muted); }
+.seo-text a { color: var(--accent); }
