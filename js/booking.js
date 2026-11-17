@@ -122,7 +122,7 @@
   if (form) form.elements.purchaseDate.max = iso(new Date());
 
   /* Календарь показывает 5 рабочих дней подряд и начинается с первого дня, где есть свободное время.
-     Прошедшие дни не показываются, прошедшие часы сегодняшнего дня скрыты. */
+     Прошедшие дни не показываются; прошедшие часы сегодня показаны как занятые. */
   var minskFmt = null;
   try {
     minskFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Minsk', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23' });
@@ -136,9 +136,6 @@
       return { date: p.year + '-' + p.month + '-' + p.day, hour: parseInt(p.hour, 10) % 24 };
     }
     return { date: iso(now), hour: now.getHours() };
-  }
-  function isPastSlot(dateISO, time, now) {
-    return dateISO < now.date || (dateISO === now.date && parseInt(time, 10) <= now.hour);
   }
 
   var thisMonday = mondayOf(fromISO(nowMinsk().date));
@@ -198,13 +195,7 @@
       head.appendChild(el('small', '', fmtDay(d)));
       col.appendChild(head);
       day.slots.forEach(function (s) {
-        if (isPastSlot(day.date, s.time, now)) {
-          // Прошедший час не показываем; пустое место сохраняет выравнивание времени по строкам.
-          var gap = el('div', 'slot slot-gone');
-          gap.setAttribute('aria-hidden', 'true');
-          col.appendChild(gap);
-          return;
-        }
+        // Прошедшие часы сегодняшнего дня сервер отдаёт как занятые — они показаны зачёркнутыми.
         var b = el('button', 'slot ' + (s.status === 'free' ? 'slot-free' : 'slot-busy'), s.time);
         b.type = 'button';
         if (s.status === 'free') {
