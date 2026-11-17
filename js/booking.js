@@ -3,7 +3,7 @@
  * Вся работа с данными — в двух функциях: getSchedule() и submitBooking().
  * Данные берутся с сервера: GET /api/schedule и POST /api/booking (адрес можно задать через window.SHKIP_API).
  *
- * Формат ответа getSchedule(weekStartISO):
+ * Формат ответа getSchedule(weekStartISO) — по неделе; календарь сам собирает из недель окно в 5 рабочих дней:
  * {
  *   banner: null | { text: "Сегодня технический перерыв" },   // показывается, если в неделе есть сегодня
  *   closedMessage: null | "текст",                              // если вся неделя недоступна
@@ -121,8 +121,43 @@
   var elSuccessDetail = document.getElementById('form-success-detail');
   if (form) form.elements.purchaseDate.max = iso(new Date());
 
-  var thisMonday = mondayOf(new Date());
-  var weekOffset = 0;
+  /* Календарь показывает 5 рабочих дней подряд и начинается с первого дня, где есть свободное время.
+     Прошедшие дни не показываются, прошедшие часы сегодняшнего дня скрыты. */
+  var minskFmt = null;
+  try {
+    minskFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Minsk', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23' });
+  } catch (e) { minskFmt = null; }
+  // Сегодняшняя дата и текущий час по Минску (как на сервере); если браузер не умеет часовые пояса — по часам устройства.
+  function nowMinsk() {
+    var now = new Date();
+    if (minskFmt && minskFmt.formatToParts) {
+      var p = {};
+      minskFmt.formatToParts(now).forEach(function (x) { p[x.type] = x.value; });
+      return { date: p.year + '-' + p.month + '-' + p.day, hour: parseInt(p.hour, 10) % 24 };
+    }
+    return { date: iso(now), hour: now.getHours() };
+  }
+  function isPastSlot(dateISO, time, now) {
+    return dateISO < now.date || (dateISO === now.date && parseInt(time, 10) <= now.hour);
+  }
+
+  var thisMonday = mondayOf(fromISO(nowMinsk().date));
+  // Рабочие дни от сегодня до последнего дня, на который сервер принимает запись (пятница недели +MAX_WEEKS_AHEAD).
+  function bookableDays() {
+    var today = nowMinsk().date;
+    var list = [];
+    var lastDay = addDays(thisMonday, 7 * MAX_WEEKS_AHEAD + WORK_DAYS - 1);
+    for (var d = new Date(thisMonday); d <= lastDay; d = addDays(d, 1)) {
+      var wd = d.getDay();
+      if (wd === 0 || wd === 6) continue;
+      var s = iso(d);
+      if (s >= today) list.push(s);
+    }
+    return list;
+  }
+  var days = bookableDays();
+  var startIdx = 0;      // первый показанный день (индекс в days)
+  var firstIdx = 0;      // первый день со свободным временем — дальше назад не листаем
   var selected = null;   // { date, time, btn }
   var requestId = 0;
   var slowTimer = null;
@@ -136,14 +171,15 @@
 
   function fmtDay(d) { return d.getDate() + ' ' + MONTHS[d.getMonth()]; }
 
-  function render(data, monday) {
-    var sun = addDays(monday, WORK_DAYS - 1);
-    elTitle.textContent = fmtDay(monday) + ' — ' + fmtDay(sun);
-    btnPrev.disabled = weekOffset <= 0;
-    btnNext.disabled = weekOffset >= MAX_WEEKS_AHEAD;
+  function render(data) {
+    var shown = data.days;
+    elTitle.textContent = fmtDay(fromISO(shown[0].date)) + ' — ' + fmtDay(fromISO(shown[shown.length - 1].date));
+    btnPrev.disabled = startIdx <= firstIdx;
+    btnNext.disabled = startIdx + WORK_DAYS >= days.length;
 
-    var todayISO = iso(new Date());
-    var hasToday = data.days.some(function (d) { return d.date === todayISO; });
+    var now = nowMinsk();
+    var todayISO = now.date;
+    var hasToday = shown.some(function (d) { return d.date === todayISO; });
     if (data.banner && hasToday) {
       elBanner.textContent = data.banner.text;
       elBanner.hidden = false;
@@ -155,13 +191,20 @@
     else elNote.hidden = true;
 
     elCal.textContent = '';
-    data.days.forEach(function (day) {
+    shown.forEach(function (day) {
       var d = fromISO(day.date);
       var col = el('div', 'cal-day' + (day.date === todayISO ? ' is-today' : ''));
-      var head = el('div', 'cal-day-head', DAY_NAMES[d.getDay()]);
+      var head = el('div', 'cal-day-head', day.date === todayISO ? 'Сегодня' : DAY_NAMES[d.getDay()]);
       head.appendChild(el('small', '', fmtDay(d)));
       col.appendChild(head);
       day.slots.forEach(function (s) {
+        if (isPastSlot(day.date, s.time, now)) {
+          // Прошедший час не показываем; пустое место сохраняет выравнивание времени по строкам.
+          var gap = el('div', 'slot slot-gone');
+          gap.setAttribute('aria-hidden', 'true');
+          col.appendChild(gap);
+          return;
+        }
         var b = el('button', 'slot ' + (s.status === 'free' ? 'slot-free' : 'slot-busy'), s.time);
         b.type = 'button';
         if (s.status === 'free') {
@@ -178,9 +221,64 @@
     });
   }
 
-  function loadWeek(keepForm) {
-    var monday = addDays(thisMonday, weekOffset * 7);
+  function mondayISO(dateISO) { return iso(mondayOf(fromISO(dateISO))); }
+
+  // Собирает дни окна [start, start+5) из ответов сервера по неделям (weeks: { понедельник: ответ }).
+  function windowData(start, weeks) {
+    var list = days.slice(start, start + WORK_DAYS);
+    var banner = null;
+    var out = list.map(function (ds) {
+      var w = weeks[mondayISO(ds)];
+      if (w.banner) banner = w.banner;
+      for (var i = 0; i < w.days.length; i++) if (w.days[i].date === ds) return w.days[i];
+      return { date: ds, slots: [] };
+    });
+    var hasFree = out.some(function (d) { return d.slots.some(function (s) { return s.status === 'free'; }); });
+    return {
+      banner: banner,
+      closedMessage: hasFree ? null : 'В эти дни свободного времени нет. Посмотрите следующие дни или позвоните нам: +375 29 685-56-00.',
+      days: out
+    };
+  }
+
+  // Загружает недели, нужные для окна; уже полученные (prefetched) повторно не запрашивает.
+  function fetchWeeks(start, isCancelled, prefetched) {
+    var weeks = {};
+    var need = [];
+    days.slice(start, start + WORK_DAYS).forEach(function (ds) {
+      var m = mondayISO(ds);
+      if (need.indexOf(m) === -1) need.push(m);
+    });
+    return Promise.all(need.map(function (m) {
+      if (prefetched && prefetched[m]) { weeks[m] = prefetched[m]; return null; }
+      return getSchedule(m, isCancelled).then(function (data) { weeks[m] = data; });
+    })).then(function () { return weeks; });
+  }
+
+  // Ищет первый день со свободным временем, проверяя недели по порядку.
+  function findFirstFree(isCancelled) {
+    var weeks = {};
+    var mondays = [];
+    days.forEach(function (ds) { var m = mondayISO(ds); if (mondays.indexOf(m) === -1) mondays.push(m); });
+    function step(i) {
+      if (i >= mondays.length) return { index: 0, weeks: weeks };
+      return getSchedule(mondays[i], isCancelled).then(function (data) {
+        weeks[mondays[i]] = data;
+        for (var k = 0; k < data.days.length; k++) {
+          var day = data.days[k];
+          var idx = days.indexOf(day.date);
+          if (idx !== -1 && day.slots.some(function (s) { return s.status === 'free'; })) return { index: idx, weeks: weeks };
+        }
+        return step(i + 1);
+      });
+    }
+    return step(0);
+  }
+
+  // first = true: при открытии страницы сначала находим первый день со свободным временем.
+  function loadWeek(keepForm, first) {
     var id = ++requestId;
+    var cancelled = function () { return id !== requestId; };
     if (!keepForm) closeForm();
     elCal.setAttribute('aria-busy', 'true');
     if (slowTimer) clearTimeout(slowTimer);
@@ -190,10 +288,17 @@
       elNote.textContent = 'Загружаем расписание, это может занять до минуты…';
       elNote.hidden = false;
     }, 2500);
-    getSchedule(iso(monday), function () { return id !== requestId; }).then(function (data) {
+    var ready = first
+      ? findFirstFree(cancelled).then(function (r) {
+          // Окно всегда из 5 дней: если первый свободный день почти в конце периода записи, начинаем чуть раньше.
+          firstIdx = startIdx = Math.min(r.index, Math.max(0, days.length - WORK_DAYS));
+          return fetchWeeks(startIdx, cancelled, r.weeks);
+        })
+      : fetchWeeks(startIdx, cancelled);
+    ready.then(function (weeks) {
       if (id !== requestId) return;
       clearTimeout(slowTimer);
-      render(data, monday);
+      render(windowData(startIdx, weeks));
       elCal.removeAttribute('aria-busy');
     }).catch(function () {
       if (id !== requestId) return;
@@ -224,8 +329,12 @@
     selected = null;
   }
 
-  btnPrev.addEventListener('click', function () { if (weekOffset > 0) { weekOffset--; loadWeek(); } });
-  btnNext.addEventListener('click', function () { if (weekOffset < MAX_WEEKS_AHEAD) { weekOffset++; loadWeek(); } });
+  btnPrev.addEventListener('click', function () {
+    if (startIdx > firstIdx) { startIdx = Math.max(firstIdx, startIdx - WORK_DAYS); loadWeek(); }
+  });
+  btnNext.addEventListener('click', function () {
+    if (startIdx + WORK_DAYS < days.length) { startIdx = Math.min(startIdx + WORK_DAYS, days.length - WORK_DAYS); loadWeek(); }
+  });
   document.getElementById('form-cancel').addEventListener('click', closeForm);
 
   form.addEventListener('submit', function (e) {
@@ -315,5 +424,5 @@
     }).then(function () { submitBtn.disabled = false; });
   });
 
-  loadWeek();
+  loadWeek(false, true);
 })();

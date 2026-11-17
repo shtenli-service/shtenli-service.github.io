@@ -199,6 +199,7 @@ address { font-style: normal; }
 .slot-free:hover { background: var(--free); color: var(--on-accent); }
 .slot-free[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .slot-busy { background: var(--busy-bg); color: var(--busy); border-color: var(--border); cursor: not-allowed; text-decoration: line-through; }
+.slot-gone { visibility: hidden; }
 .legend { display: flex; gap: 18px; margin-top: 12px; color: var(--text-muted); font-size: .9rem; }
 .dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
 .dot-free { background: var(--free); }
