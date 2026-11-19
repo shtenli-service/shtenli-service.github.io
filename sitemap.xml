@@ -3,10 +3,11 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shtenli-service.by/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://shtenli-service.by/img/hero-bg.jpg</image:loc></image:image>
+    <image:image><image:loc>https://shtenli-service.by/img/work-6.jpg</image:loc></image:image>
     <image:image><image:loc>https://shtenli-service.by/img/work-5.jpg</image:loc></image:image>
     <image:image><image:loc>https://shtenli-service.by/img/work-4.jpg</image:loc></image:image>
     <image:image><image:loc>https://shtenli-service.by/img/work-1.jpg</image:loc></image:image>
