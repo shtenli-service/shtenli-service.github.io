@@ -37,7 +37,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Exo+2:ital,wght@1,800;1,900&display=swap&subset=cyrillic" rel="stylesheet">
   <!-- ?v= — номер версии: менять при каждом изменении CSS/JS, чтобы браузеры брали свежие файлы -->
-  <link rel="stylesheet" href="css/style.css?v=20261120q">
+  <link rel="stylesheet" href="css/style.css?v=20261120c">
   <link rel="preload" as="image" href="img/hero-bg.jpg">
 
   <script type="application/ld+json">
@@ -407,14 +407,14 @@
         </ul>
         <p class="hint">Приём: пн–пт, 9:00–17:00, слоты по часу.</p>
 
-        <form id="booking-form" class="form" hidden novalidate aria-labelledby="form-h">
+        <form id="booking-form" class="form ym-hide-content ym-disable-keys" hidden novalidate aria-labelledby="form-h">
           <h3 id="form-h">Заявка на <span id="form-slot"></span></h3>
           <div class="form-grid">
             <label>Имя
-              <input type="text" name="name" autocomplete="name" required>
+              <input type="text" name="name" autocomplete="name" class="ym-hide-content ym-disable-keys" required>
             </label>
             <label>Телефон
-              <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+375 __ ___-__-__" required>
+              <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+375 __ ___-__-__" class="ym-hide-content ym-disable-keys" required>
             </label>
             <label>Техника
               <select name="equipment" required>
@@ -441,7 +441,7 @@
               </select>
             </label>
             <label class="span-2">Что случилось
-              <textarea name="problem" rows="3" placeholder="Коротко: не заводится, течёт масло, странный звук…"></textarea>
+              <textarea name="problem" rows="3" class="ym-hide-content ym-disable-keys" placeholder="Коротко: не заводится, течёт масло, странный звук…"></textarea>
             </label>
             <fieldset class="span-2 radios">
               <legend>Ваш товар находится на гарантии?</legend>
@@ -645,6 +645,7 @@
     </div>
     <div class="container footer-bottom">
       <a class="btn btn-small footer-privacy" href="privacy.html">Политика конфиденциальности</a>
+      <button type="button" class="btn btn-small footer-cookie" data-cookie-settings>Настройки cookie</button>
     </div>
   </footer>
 
@@ -653,6 +654,7 @@
   <script src="js/main.js?v=20261112" defer></script>
   <script>window.SHKIP_API = 'https://cabinet.shtenli-service.by';</script>
   <script src="js/booking.js?v=20261120g" defer></script>
+  <script src="js/consent.js?v=20261120" defer></script>
   <script src="js/stats.js?v=20261120g" defer></script>
 </body>
 </html>
