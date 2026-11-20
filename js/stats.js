@@ -1,6 +1,8 @@
 /*
  * Анонимный счётчик визитов. Никаких идентификаторов посетителя: в браузере хранятся только две даты —
  * shkip_first (первый визит) и shkip_last (когда этот браузер последний раз учтён). Один визит в день.
+ * Сервер получает только источник, признак «впервые» и сколько дней прошло с прошлого учтённого визита (gap) —
+ * по gap кабинет считает каждого посетителя один раз за неделю или месяц.
  */
 (function () {
   'use strict';
@@ -22,6 +24,14 @@
   var first = store('shkip_first');
   var isNew = !first;
 
+  // Дней с прошлого учтённого визита; 0 — неизвестно (первый визит или стёртые данные).
+  function dayNum(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 86400000 : NaN;
+  }
+  var gap = isNew ? 0 : Math.round(dayNum(today) - dayNum(last));
+  if (!(gap >= 1)) gap = 0;
+
   // Определяет ключ источника по имени (utm_source) или имени хоста (referrer).
   function classify(s) {
     var labels = s.split('.');
@@ -36,6 +46,7 @@
     if (L('grok') || tail('x.ai')) return 'grok';
     if (L('google')) return 'google';
     if (L('yandex') || tail('ya.ru') || L('dzen')) return 'yandex';
+    if (L('bing')) return 'bing';
     if (L('kufar')) return 'kufar';
     if (L('vk') || L('vkontakte')) return 'vk';
     if (tail('ok.ru') || s === 'ok' || L('odnoklassniki')) return 'ok';
@@ -73,7 +84,7 @@
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ src: sourceKey(), 'new': isNew }),
+      body: JSON.stringify({ src: sourceKey(), 'new': isNew, gap: gap }),
       keepalive: true
     }).then(function (r) {
       if (!r.ok) return;
