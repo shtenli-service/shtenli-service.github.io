@@ -387,7 +387,7 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .lp-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 12px; }
 .lp-note { color: var(--text-muted); font-size: .9rem; }
 .lp-photo { margin: 0; }
-.lp-photo img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.lp-photo img { display: block; width: 100%; height: auto; max-height: 640px; object-fit: contain; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
 .lp-photo figcaption { color: var(--text-muted); font-size: .78rem; margin-top: 6px; }
 .lp-photo figcaption a { color: var(--text-muted); }
 .lp-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
