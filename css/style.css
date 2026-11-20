@@ -375,3 +375,36 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .seo-text h3 { font-size: 1.15rem; margin: 1.6em 0 .5em; }
 .seo-text p { margin: 0 0 .9em; color: var(--text-muted); }
 .seo-text a { color: var(--accent); }
+
+/* ===== Посадочные страницы услуг (/remont-…/) ===== */
+.lp-home { margin-left: auto; }
+.lp-hero { padding-top: 36px; }
+.lp-hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; }
+.lp-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; margin: 8px 0 14px; }
+.lp-crumbs { color: var(--text-muted); font-size: .9rem; }
+.lp-crumbs a { color: var(--text-muted); }
+.lp-lead { font-size: 1.08rem; color: var(--text); max-width: 640px; }
+.lp-cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 12px; }
+.lp-note { color: var(--text-muted); font-size: .9rem; }
+.lp-photo { margin: 0; }
+.lp-photo img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.lp-photo figcaption { color: var(--text-muted); font-size: .78rem; margin-top: 6px; }
+.lp-photo figcaption a { color: var(--text-muted); }
+.lp-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.lp-card h2 { font-size: 1.3rem; margin-bottom: 12px; }
+.lp-text { max-width: 980px; }
+.lp-text p { color: var(--text-muted); }
+.lp-contacts { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+.lp-contacts address { font-style: normal; }
+.lp-contacts address p { margin: 0 0 10px; }
+.lp-contacts-cta { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.lp-related { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.lp-related a { display: inline-block; padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); text-decoration: none; font-weight: 600; font-size: .92rem; }
+.lp-related a:hover { border-color: var(--accent); color: var(--accent); }
+.footer-bottom { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 900px) {
+  .lp-hero-grid, .lp-two, .lp-contacts { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .lp-home { display: none; }
+}
