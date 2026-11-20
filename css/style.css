@@ -408,3 +408,9 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 @media (max-width: 480px) {
   .lp-home { display: none; }
 }
+
+/* «Что ремонтируем»: ссылки на страницы услуг */
+.card-more { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 0 0 !important; padding-top: 10px; border-top: 1px solid var(--border); }
+.card-more a { color: var(--accent); font-weight: 700; font-size: .92rem; text-decoration: none; }
+.card-more a:hover { text-decoration: underline; }
+.card-more-all a { color: var(--accent); }
