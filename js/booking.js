@@ -301,10 +301,14 @@
     });
   }
 
+  // Цели статистики (js/stats.js). Если счётчик не загрузился — ничего не делаем.
+  function goal(name) { try { if (window.shkipGoal) window.shkipGoal(name); } catch (e) { /* ignore */ } }
+
   function selectSlot(dateISO, time, btn) {
     if (selected && selected.btn) selected.btn.setAttribute('aria-pressed', 'false');
     btn.setAttribute('aria-pressed', 'true');
     selected = { date: dateISO, time: time, btn: btn };
+    goal('slot');
     var d = fromISO(dateISO);
     elSlotLabel.textContent = fmtDay(d) + ' в ' + time;
     elSuccess.hidden = true;
@@ -392,6 +396,7 @@
     var submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
     submitBooking(payload).then(function () {
+      goal('booking');
       var when = fmtDay(fromISO(payload.date)) + ' в ' + payload.time;
       elSuccessDetail.textContent = ' Время: ' + when + '.';
       closeForm();
