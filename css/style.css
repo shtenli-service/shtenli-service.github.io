@@ -318,7 +318,6 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .legal tr:last-child td { border-bottom: 0; }
 
 /* Липкая кнопка звонка (только мобильные) */
-.call-fab { display: none; }
 
 /* ===== Адаптив ===== */
 @media (max-width: 900px) {
@@ -337,13 +336,6 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
   .calendar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .form-grid { grid-template-columns: 1fr; }
   .span-2 { grid-column: auto; }
-  .call-fab {
-    display: flex; align-items: center; justify-content: center; position: fixed; z-index: 60;
-    left: 16px; right: 16px; bottom: 14px; min-height: 52px; border-radius: 999px;
-    background: var(--accent); color: var(--on-accent); font-weight: 800; text-decoration: none;
-    box-shadow: 0 6px 20px rgba(0,0,0,.5);
-  }
-  .call-fab:hover { color: var(--on-accent); background: var(--accent-hover); }
 }
 @media (max-width: 480px) {
   .header-phone { font-size: .85rem; }
@@ -426,4 +418,4 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .cookie-btns { display: flex; gap: 10px; flex: 0 0 auto; }
 .cookie-btns .btn { min-width: 120px; }
 .footer-cookie { cursor: pointer; }
-@media (max-width: 700px) { .cookie-bar { flex-direction: column; align-items: stretch; bottom: 80px; } .cookie-btns .btn { flex: 1 1 0; } }
+@media (max-width: 700px) { .cookie-bar { flex-direction: column; align-items: stretch; bottom: 16px; } .cookie-btns .btn { flex: 1 1 0; } }
