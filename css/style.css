@@ -419,3 +419,11 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .cookie-btns .btn { min-width: 120px; }
 .footer-cookie { cursor: pointer; }
 @media (max-width: 700px) { .cookie-bar { flex-direction: column; align-items: stretch; bottom: 16px; } .cookie-btns .btn { flex: 1 1 0; } }
+
+/* «Что ремонтируем»: короткие карточки, полный список работ — на страницах ремонта */
+.services-short > li { display: flex; flex-direction: column; }
+.services-short h3 { margin-bottom: 8px; }
+.card-short { color: var(--text-muted); font-size: .95rem; margin: 0; }
+.services-short .card-more { margin-top: auto !important; }
+.services-short .card-short + .card-more { margin-top: 12px; }
+.lp-intro { color: var(--text-muted); margin: 0 0 12px; }
