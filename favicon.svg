@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#1b1d21"/>
-  <text x="33" y="47" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-style="italic" font-size="40" fill="#ff7a1a">Ш</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="102" fill="#ff7a1a"/><path fill="#1b1d21" d="M399.7 398.9L15.2 398.9L112.3 113.1L200.4 113.1L127.2 328.7L186.6 328.7L259.9 113.1L348.3 113.1L275 328.7L335.2 328.7L408.5 113.1L496.8 113.1Z"/></svg>
