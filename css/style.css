@@ -427,7 +427,12 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .cookie-btns { display: flex; gap: 10px; flex: 0 0 auto; }
 .cookie-btns .btn { min-width: 120px; }
 .footer-cookie { cursor: pointer; }
-@media (max-width: 700px) { .cookie-bar { flex-direction: column; align-items: stretch; bottom: 16px; } .cookie-btns .btn { flex: 1 1 0; } }
+@media (max-width: 700px) {
+  .cookie-bar { flex-direction: column; align-items: stretch; left: 8px; right: 8px; bottom: 8px; padding: 10px 12px; gap: 8px; }
+  .cookie-bar p { font-size: .8rem; line-height: 1.4; }
+  .cookie-btns { gap: 8px; }
+  .cookie-btns .btn { flex: 1 1 0; min-width: 0; min-height: 40px; padding: 4px 10px; }
+}
 
 /* «Что ремонтируем»: короткие карточки, полный список работ — на страницах ремонта */
 .services-short > li { display: flex; flex-direction: column; }

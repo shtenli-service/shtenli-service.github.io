@@ -55,9 +55,8 @@
       bar.setAttribute('aria-label', 'Согласие на файлы cookie');
       var policy = '/privacy.html#cookie';
       bar.innerHTML =
-        '<p>Мы используем файлы cookie и сервис Яндекс Метрика, чтобы понимать, как посетители пользуются сайтом, и делать его удобнее. ' +
-        'Данные передаются ООО «ЯНДЕКС» (Россия). Без вашего согласия Метрика не включается. ' +
-        '<a href="' + policy + '">Подробнее в политике конфиденциальности</a>.</p>' +
+        '<p>Сайт использует файлы cookie, чтобы стать удобнее для вас. ' +
+        '<a href="' + policy + '">Подробнее…</a></p>' +
         '<div class="cookie-btns">' +
         '<button type="button" class="btn btn-small" data-cookie="yes">Принять</button>' +
         '<button type="button" class="btn btn-small" data-cookie="no">Отклонить</button>' +
