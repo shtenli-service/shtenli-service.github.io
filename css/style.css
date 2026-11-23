@@ -233,7 +233,7 @@ input[type="date"] { color-scheme: dark; }
 .form label.consent { margin-top: 16px; align-items: flex-start; font-size: .88rem; font-weight: 400; color: var(--text-muted); }
 .consent input { flex: 0 0 auto; margin: 1px 0 0; }
 input[type="text"], input[type="tel"], input[type="date"], select, textarea {
-  font: inherit; font-weight: 400; color: var(--text); background: var(--bg);
+  font: inherit; font-size: 16px; font-weight: 400; color: var(--text); background: var(--bg);   /* 16px: iPhone не приближает страницу при нажатии на поле */
   border: 1px solid var(--border); border-radius: 8px; padding: 11px 12px; min-height: 46px; width: 100%;
 }
 textarea { resize: vertical; }
