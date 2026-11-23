@@ -145,6 +145,13 @@ address { font-style: normal; }
   .brand-profi { height: 24px; }
   .brand-sep { height: 24px; flex: none; }
 }
+/* Очень узкие экраны (320 px): логотипы меньше, чтобы Profi Motors не уходил за край */
+@media (max-width: 359px) {
+  .brand-lockup { gap: 8px; }
+  .brand-shtenli { height: 16px; }
+  .brand-profi { height: 19px; }
+  .brand-sep { height: 19px; }
+}
 .eyebrow { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: .8rem; margin-bottom: 14px; }
 .lead { font-size: 1.15rem; color: var(--text-muted); max-width: 680px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0; }
