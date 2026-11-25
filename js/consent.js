@@ -1,8 +1,9 @@
 /*
- * Согласие на файлы cookie и Яндекс Метрику (счётчик 114391986).
- * Пока посетитель не нажал «Принять», код Метрики не скачивается и cookie Метрики не ставятся.
- * Выбор хранится в браузере (shkip_consent = yes|no:дата). Ссылка/кнопка с атрибутом data-cookie-settings
- * снова открывает баннер. При отказе после согласия удаляем cookie Метрики и перезагружаем страницу.
+ * Яндекс Метрика (счётчик 114391986) и отказ от неё.
+ * С 25.11.2026 по решению владельца сайта баннер сам не появляется: Метрика включается сразу, если посетитель
+ * раньше не выбрал «Отклонить» (согласие продолжением пользования сайтом — политика, п. 2.8).
+ * Выбор хранится в браузере (shkip_consent = yes|no:дата). Кнопка «Настройки cookie» (data-cookie-settings) в подвале
+ * открывает выбор «Принять / Отклонить»; при «Отклонить» удаляем cookie Метрики и перезагружаем страницу без неё.
  * Наш собственный счётчик (js/stats.js) работает независимо и cookie не использует.
  */
 (function () {
@@ -64,12 +65,11 @@
       bar.addEventListener('click', function (e) {
         var b = e.target.closest ? e.target.closest('[data-cookie]') : null;
         if (!b) return;
-        var was = choice();
         if (b.getAttribute('data-cookie') === 'yes') {
           set('yes'); hide(); loadMetrika();
         } else {
           set('no'); hide();
-          if (was === 'yes') { dropMetrikaCookies(); window.location.reload(); }
+          if (window.SHKIP_YM) { dropMetrikaCookies(); window.location.reload(); }
         }
       });
       document.body.appendChild(bar);
@@ -84,9 +84,7 @@
       e.preventDefault();
       show();
     });
-    var c = choice();
-    if (c === 'yes') loadMetrika();
-    else if (c !== 'no') show();
+    if (choice() !== 'no') loadMetrika();   // баннер сам не показываем — только по кнопке «Настройки cookie»
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
