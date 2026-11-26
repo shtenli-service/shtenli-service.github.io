@@ -441,3 +441,6 @@ input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--da
 .services-short .card-more { margin-top: auto !important; }
 .services-short .card-short + .card-more { margin-top: 12px; }
 .lp-intro { color: var(--text-muted); margin: 0 0 12px; }
+
+/* Телефон администрации в подвале — просто текст, без ссылки */
+.no-tel { white-space: nowrap; }
